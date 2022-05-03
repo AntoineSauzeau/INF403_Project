@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS Conteneurs;
+DROP TABLE IF EXISTS TypeMarchandises;
+DROP TABLE IF EXISTS Bateaux;
+DROP TABLE IF EXISTS Entrepots;
+DROP TABLE IF EXISTS StockEntrepots;
+DROP TABLE IF EXISTS Importations;
+DROP TABLE IF EXISTS Quais;
+
+
 -- Conteneurs (numConteneur, numTypeMarchandise)
 CREATE TABLE Conteneurs (
     numConteneur INTEGER PRIMARY KEY,
@@ -22,13 +31,13 @@ CREATE TABLE Bateaux (
 -- Entrepots (numEntrepot, tailleEntrepot, secteurEntrepot)
 CREATE TABLE Entrepots (
     numEntrepot INTEGER PRIMARY KEY,
-    tailleEntrepot INTEGER NOT NULL?
+    tailleEntrepot INTEGER NOT NULL,
     secteurEntrepot TEXT NOT NULL
 );
 
 -- StockEntrepots (numEntrepot, numConteneur)
 CREATE TABLE StockEntrepots (
-    numStock INTEGER PRIMARY KEY
+    numStock INTEGER PRIMARY KEY,
     numConteneur INTEGER UNIQUE NOT NULL,
     numEntrepot INTEGER NOT NULL,
 
@@ -38,7 +47,7 @@ CREATE TABLE StockEntrepots (
 
 -- Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai)
 CREATE TABLE Importations (
-    numImportation INTEGER PRIMARY KEY
+    numImportation INTEGER PRIMARY KEY,
     numConteneur INTEGER UNIQUE NOT NULL,
     dateArriveeImportation TEXT NOT NULL,
     matriculeBateau INTEGER NOT NULL,
