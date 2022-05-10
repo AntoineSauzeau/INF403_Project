@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS Quais;
 
 -- Conteneurs (numConteneur, numTypeMarchandise)
 CREATE TABLE Conteneurs (
-    numConteneur INTEGER PRIMARY KEY,
+    numConteneur INTEGER PRIMARY KEY AUTOINCREMENT,
     numTypeMarchandise INTEGER NOT NULL,
 
     FOREIGN KEY (numTypeMarchandise) REFERENCES TypeMarchandises (numTypeMarchandise)
@@ -17,7 +17,7 @@ CREATE TABLE Conteneurs (
 
 -- TypeMarchandises (numTypeMarchandise, nomMarchandise, poidsMarchandise)
 CREATE TABLE TypeMarchandises (
-    numTypeMarchandise INTEGER PRIMARY KEY,
+    numTypeMarchandise INTEGER PRIMARY KEY AUTOINCREMENT,
     nomMarchandise TEXT NOT NULL,
     poidsMarchandise INTEGER NOT NULL
 );
@@ -30,14 +30,14 @@ CREATE TABLE Bateaux (
 
 -- Entrepots (numEntrepot, tailleEntrepot, secteurEntrepot)
 CREATE TABLE Entrepots (
-    numEntrepot INTEGER PRIMARY KEY,
+    numEntrepot INTEGER PRIMARY KEY AUTOINCREMENT,
     tailleEntrepot INTEGER NOT NULL,
     secteurEntrepot TEXT NOT NULL
 );
 
 -- StockEntrepots (numEntrepot, numConteneur)
 CREATE TABLE StockEntrepots (
-    numStock INTEGER PRIMARY KEY,
+    numStock INTEGER PRIMARY KEY AUTOINCREMENT,
     numConteneur INTEGER UNIQUE NOT NULL,
     numEntrepot INTEGER NOT NULL,
 
@@ -47,7 +47,7 @@ CREATE TABLE StockEntrepots (
 
 -- Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai)
 CREATE TABLE Importations (
-    numImportation INTEGER PRIMARY KEY,
+    numImportation INTEGER PRIMARY KEY AUTOINCREMENT,
     numConteneur INTEGER UNIQUE NOT NULL,
     dateArriveeImportation TEXT NOT NULL,
     matriculeBateau INTEGER NOT NULL,
@@ -60,6 +60,6 @@ CREATE TABLE Importations (
 
 -- Quais (numQuai, secteurQuai)
 CREATE TABLE Quais (
-    numQuai INTEGER PRIMARY KEY,
+    numQuai INTEGER PRIMARY KEY AUTOINCREMENT,
     secteurQuai TEXT NOT NULL
 );
