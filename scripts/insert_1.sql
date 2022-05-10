@@ -30,10 +30,21 @@ INSERT INTO Conteneurs (numTypeMarchandise) VALUES (6);
 INSERT INTO Conteneurs (numTypeMarchandise) VALUES (4);
 INSERT INTO Conteneurs (numTypeMarchandise) VALUES (6);
 INSERT INTO Conteneurs (numTypeMarchandise) VALUES (2);
-INSERT INTO Conteneurs (numTypeMarchandise) VALUES (0);
+INSERT INTO Conteneurs (numTypeMarchandise) VALUES (7);
 INSERT INTO Conteneurs (numTypeMarchandise) VALUES (1);
 
-INSERT INTO StockEntrepots VALUES (0, )
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (1, 4);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (2, 3);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (3, 1);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (4, 2);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (5, 2);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (6, 3);
+INSERT INTO StockEntrepots (numConteneur, numEntrepot) VALUES (7, 4);
+
+INSERT INTO Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai) VALUES (8, "2022-07-02 14:58:24", "FYTDMKH8", 1);
+INSERT INTO Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai) VALUES (9, "2022-05-39 05:13:51", "NDTFMYS2", 1);
+INSERT INTO Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai) VALUES (10, "2022-07-02 14:58:24", "UGDNEIF6", 2);
+INSERT INTO Importations (numConteneur, dateArriveeImportation, matriculeBateau, numQuai) VALUES (11,"2022-07-02 14:58:24", "KDNEGHF5", 3);
 
 
 
