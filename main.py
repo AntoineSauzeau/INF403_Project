@@ -106,14 +106,17 @@ def treat_user_response(r):
             show_query_results(rows, 3)
 
         elif(r == 3):
-            cur.execute("SELECT matriculeBateau, nomBateau, nomMarchandise, poidsMarchandise FROM Importations JOIN Conteneurs USING(numConteneur)")
+            id_boat = input("Matricule du bateau")
+            cur.execute("SELECT matriculeBateau, nomBateau, nomMarchandise, poidsMarchandise FROM Bateaux JOIN Importations USING(matriculeBateau) JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) WHERE matriculeBateau='NDTFMYS2'")
             rows = cur.fetchall()
-            show_query_results(rows, 3)
+            show_query_results(rows, 4)
 
     return page
 
 
 def show_query_results(rows, query_id):
+
+    print(rows)
 
     if(query_id == 1):
 
@@ -137,12 +140,26 @@ def show_query_results(rows, query_id):
             table.add_row(row[1], row[0])
 
     elif(query_id == 3):
-        table = Table(title="Tous les bateaux qui n'ont pas de livraison en cours")
+        table = Table(title="Liste des bateaux n'ayant pas de livraison en cours")
         table.add_column("Nom")
         table.add_column("Matricule")
 
         for row in rows:
             table.add_row(row[1], row[0])
+
+    elif(query_id == 4):
+        table = Table(title="Cargaison du bateau \'" + rows[0][1] + "\'")
+        table.add_column("Marchandise")
+        table.add_column("Poids")
+
+        for row in rows:
+            table.add_row(row[2], str(row[3]))
+
+    elif(query_id == 4):
+        table = Table(title="Cargaison par bateau")
+        table.add_column("Nom du bateau")
+        table.add_column("Matricule du bateau")
+        table.add_column("Marchandise")
 
 
     console = Console()
