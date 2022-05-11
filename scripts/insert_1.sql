@@ -2,6 +2,7 @@ INSERT INTO Bateaux VALUES ("FYTDMKH8", "Santa Maria");
 INSERT INTO Bateaux VALUES ("NDTFMYS2", "Mayflower");
 INSERT INTO Bateaux VALUES ("UGDNEIF6", "HMS Victory");
 INSERT INTO Bateaux VALUES ("KDNEGHF5", "USS Constitution");
+INSERT INTO Bateaux VALUES ("KDNEGHF5", "HMS Beagle");
 
 INSERT INTO Entrepots (tailleEntrepot, secteurEntrepot) VALUES (85, "Secteur A");
 INSERT INTO Entrepots (tailleEntrepot, secteurEntrepot) VALUES (42, "Secteur B");

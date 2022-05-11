@@ -1,7 +1,14 @@
 import sqlite3
 from db import create_database
+from rich.console import Console
+from rich.table import Table
+import subprocess
+
 
 page = 1
+
+con = sqlite3.connect('database.db')
+cur = con.cursor()
 
 def display_menu(page):
 
@@ -20,6 +27,7 @@ def display_menu(page):
         print("Que voulez vous faire ?")
         print("   1) Voir les importations qui arrivent aujourd'hui")
         print("   2) Voir toutes les importations")
+
     elif(page == 3):
         print("Menu : Stocks")
         print("Que voulez vous faire ?")
@@ -44,10 +52,11 @@ def display_menu(page):
         print("Que voulez vous faire ?")
         print("   1) Voir la liste des bateaux")
         print("   2) Voir les bateaux qui n'ont pas de livraison en cours")
-        print("   3) Voir la cargaison d'un bateau en particulier")
+        print("   3) Voir la cargaison des bateaux")
 
     if(page != 1):
         print("   -) Retour")
+
     print("   --) Quitter le programme")
 
     print("---------------")
@@ -77,11 +86,79 @@ def treat_user_response(r):
         elif(r == 5):
             page = 6
 
+    if(page == 2):
+        if(r == 1):
+            pass
+        elif(r == 2):
+            cur.execute("SELECT numImportation, nomMarchandise, poidsMarchandise, dateArriveeImportation, numQuai, matriculeBateau FROM Importations JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise)")
+            rows = cur.fetchall()
+            show_query_results(rows, 1)
+
+    elif(page == 6):
+        if(r == 1):
+            cur.execute("SELECT matriculeBateau, nomBateau FROM Bateaux")
+            rows = cur.fetchall()
+            show_query_results(rows, 2)
+        
+        elif(r == 2):
+            cur.execute("SELECT matriculeBateau, nomBateau FROM Bateaux WHERE matriculeBateau NOT IN (SELECT matriculeBateau FROM Importations)")
+            rows = cur.fetchall()
+            show_query_results(rows, 3)
+
+        elif(r == 3):
+            cur.execute("SELECT matriculeBateau, nomBateau, nomMarchandise, poidsMarchandise FROM Importations JOIN Conteneurs USING(numConteneur)")
+            rows = cur.fetchall()
+            show_query_results(rows, 3)
+
     return page
 
 
+def show_query_results(rows, query_id):
+
+    if(query_id == 1):
+
+        table = Table(title="Toutes les importations")
+        table.add_column("Numéro")
+        table.add_column("Marchandise")
+        table.add_column("Poids")
+        table.add_column("Date d'arrivée")
+        table.add_column("Quai")
+        table.add_column("Matricule bateau")
+
+        for row in rows:
+            table.add_row(str(row[0]), row[1], str(row[2]), row[3], str(row[4]), row[5])
+
+    elif(query_id == 2):
+        table = Table(title="Tous les bateaux")
+        table.add_column("Nom")
+        table.add_column("Matricule")
+
+        for row in rows:
+            table.add_row(row[1], row[0])
+
+    elif(query_id == 3):
+        table = Table(title="Tous les bateaux qui n'ont pas de livraison en cours")
+        table.add_column("Nom")
+        table.add_column("Matricule")
+
+        for row in rows:
+            table.add_row(row[1], row[0])
+
+
+    console = Console()
+    console.print(table)
+
+    input("Appuyez sur la touche entrée pour continuer...")
+
+
+def get_console_width():
+    tput = subprocess.Popen(['tput', 'cols'], stdout=subprocess.PIPE)
+    return int(tput.communicate()[0].strip())
+
 
 def main():
+
+    print(get_console_width())
 
     break_ = False
     while not(break_):
@@ -90,9 +167,6 @@ def main():
         response = input()
         treat_user_response(response)
     
-
-con = sqlite3.connect('database.db')
-cur = con.cursor()
 
 #create_database(cur)
 
