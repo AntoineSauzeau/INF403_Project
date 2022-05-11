@@ -185,6 +185,6 @@ def main():
         treat_user_response(response)
     
 
-#create_database(cur)
+create_database(cur)
 
 main()

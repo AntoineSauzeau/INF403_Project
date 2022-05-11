@@ -1,6 +1,7 @@
 
 def create_database(cur):
     interpret_sql_file(cur, "scripts/init.sql")
+    interpret_sql_file(cur, "scripts/insert_1.sql")
 
 def delete_database(cur):
     pass
