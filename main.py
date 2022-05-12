@@ -86,7 +86,7 @@ def treat_user_response(r):
         elif(r == 5):
             page = 6
 
-    if(page == 2):
+    elif(page == 2):
         if(r == 1):
             pass
         elif(r == 2):
@@ -126,7 +126,25 @@ def treat_user_response(r):
 
         elif(r == 2):
             pass
-            #cur.execute("SELECT secteurEntrepot FROM Entrepots JOIN StockEntrepots USING (numEntrepot) GROUP BY ")
+            #cur.execute("SELECT secteurEntrepot FROM Entrepots JOIN StockEntrepots USING (numEntrepot) GROUP BY (secteurEntrepot)")
+
+    elif(page == 3):
+        if(r == 1):
+            cur.execute("SELECT numConteneur, nomMarchandise, poidsMarchandise, numEntrepot, secteurEntrepot FROM Entrepots JOIN StockEntrepots USING(numEntrepot) JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) ORDER BY numEntrepot ASC")
+            rows = cur.fetchall()
+            show_query_results(rows, 7)
+        
+        elif(r == 2):
+            num_entrepot = input("Numéro de l'entrepôt : ")
+            cur.execute("SELECT numEntrepot, numConteneur, nomMarchandise, poidsMarchandise FROM Entrepots JOIN StockEntrepots USING(numEntrepot) JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) WHERE numEntrepot="+num_entrepot)
+            rows = cur.fetchall()
+            show_query_results(rows, 8)
+
+        elif(r == 3):
+            secteur_name = input("Secteur : ")
+            cur.execute("SELECT secteurEntrepot, numConteneur, nomMarchandise, poidsMarchandise, numEntrepot FROM Entrepots JOIN StockEntrepots USING(numEntrepot) JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) WHERE secteurEntrepot='"+secteur_name+"' ORDER BY numEntrepot ASC")
+            rows = cur.fetchall()
+            show_query_results(rows, 9)
 
     return page
 
@@ -198,6 +216,36 @@ def show_query_results(rows, query_id):
 
         for row in rows:
             table.add_row(str(row[0]), row[1], str(row[2]), str(row[3]) + " (" + str((row[3] / row[2])*100) + "%)")
+
+    elif(query_id == 7):
+        table = Table(title="Inventaire des stocks")
+        table.add_column("Identifiant")
+        table.add_column("Marchandise")
+        table.add_column("Poids")
+        table.add_column("Entrepôt")
+        table.add_column("Secteur")
+
+        for row in rows:
+            table.add_row(str(row[0]), row[1], str(row[2]), str(row[3]), row[4])
+
+    elif(query_id == 8):
+        table = Table(title="Inventaire de l'entrepôt " + str(rows[0][0]))
+        table.add_column("Identifiant")
+        table.add_column("Marchandise")
+        table.add_column("Poids")
+
+        for row in rows:
+            table.add_row(str(row[1]), row[2], str(row[3]))
+
+    elif(query_id == 9):
+        table = Table(title="Inventaire du secteur " + rows[0][0])
+        table.add_column("Identifiant")
+        table.add_column("Marchandise")
+        table.add_column("Poids")
+        table.add_column("Entrepôt")
+
+        for row in rows:
+            table.add_row(str(row[1]), row[2], str(row[3]), str(row[4]))
 
 
     console = Console()
