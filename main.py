@@ -45,14 +45,14 @@ def display_menu(page):
     elif(page == 5):
         print("Menu : Quais")
         print("Que voulez vous faire ?")
-        print("   1) Nombre d'importation programmées par quais")
+        print("   1) Toutes les importations programmées d'un quai")
 
     elif(page == 6):
         print("Menu : Bateaux")
         print("Que voulez vous faire ?")
         print("   1) Voir la liste des bateaux")
         print("   2) Voir les bateaux qui n'ont pas de livraison en cours")
-        print("   3) Voir la cargaison des bateaux")
+        print("   3) Voir la cargaison d'un bateau")
 
     if(page != 1):
         print("   -) Retour")
@@ -106,10 +106,27 @@ def treat_user_response(r):
             show_query_results(rows, 3)
 
         elif(r == 3):
-            id_boat = input("Matricule du bateau")
+            id_boat = input("Matricule du bateau : ")
             cur.execute("SELECT matriculeBateau, nomBateau, nomMarchandise, poidsMarchandise FROM Bateaux JOIN Importations USING(matriculeBateau) JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) WHERE matriculeBateau='NDTFMYS2'")
             rows = cur.fetchall()
             show_query_results(rows, 4)
+
+    elif(page == 5):
+        if(r == 1):
+            quai_number = input("Numéro du quai : ")
+            cur.execute("SELECT numConteneur, dateArriveeImportation, matriculeBateau FROM Importations WHERE numQuai="+quai_number)
+            rows = cur.fetchall()
+            show_query_results(rows, 5)
+
+    elif(page == 4):
+        if(r == 1):
+            cur.execute("SELECT numEntrepot, secteurEntrepot, tailleEntrepot, tailleEntrepot - COUNT(numEntrepot) AS placeRestante FROM Entrepots JOIN StockEntrepots USING (numEntrepot) GROUP BY (numEntrepot)")
+            rows = cur.fetchall()
+            show_query_results(rows, 6)
+
+        elif(r == 2):
+            pass
+            #cur.execute("SELECT secteurEntrepot FROM Entrepots JOIN StockEntrepots USING (numEntrepot) GROUP BY ")
 
     return page
 
@@ -156,10 +173,31 @@ def show_query_results(rows, query_id):
             table.add_row(row[2], str(row[3]))
 
     elif(query_id == 4):
-        table = Table(title="Cargaison par bateau")
-        table.add_column("Nom du bateau")
-        table.add_column("Matricule du bateau")
+        table = Table(title="Cargaison du bateau " + row[0])
         table.add_column("Marchandise")
+        table.add_column("Poids")
+
+        for row in rows:
+            table.add_row(row[2], row[3])
+
+    elif(query_id == 5):
+        table = Table(title="Importations programmées sur ce quai")
+        table.add_column("Numéro du conteneur")
+        table.add_column("Date d'arrivée")
+        table.add_column("Matricule du bateau")
+
+        for row in rows:
+            table.add_row(str(row[0]), row[1], row[2])
+
+    elif(query_id == 6):
+        table = Table(title="Place restante par entrepôt")
+        table.add_column("Numéro de l'entrepôt")
+        table.add_column("Secteur")
+        table.add_column("Taille")
+        table.add_column("Place restante")
+
+        for row in rows:
+            table.add_row(str(row[0]), row[1], str(row[2]), str(row[3]) + " (" + str((row[3] / row[2])*100) + "%)")
 
 
     console = Console()
