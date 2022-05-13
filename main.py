@@ -3,6 +3,7 @@ from db import create_database
 from rich.console import Console
 from rich.table import Table
 import subprocess
+import datetime
 
 
 page = 1
@@ -27,6 +28,7 @@ def display_menu(page):
         print("Que voulez vous faire ?")
         print("   1) Voir les importations qui arrivent aujourd'hui")
         print("   2) Voir toutes les importations")
+        print("   3) Ajouter une importation")
 
     elif(page == 3):
         print("Menu : Stocks")
@@ -45,7 +47,9 @@ def display_menu(page):
     elif(page == 5):
         print("Menu : Quais")
         print("Que voulez vous faire ?")
-        print("   1) Toutes les importations programmées d'un quai")
+        print("   1) Voir tous les quais")
+        print("   2) Toutes les importations programmées d'un quai")
+        print("   3) Ajouter un nouveau quai")
 
     elif(page == 6):
         print("Menu : Bateaux")
@@ -53,6 +57,7 @@ def display_menu(page):
         print("   1) Voir la liste des bateaux")
         print("   2) Voir les bateaux qui n'ont pas de livraison en cours")
         print("   3) Voir la cargaison d'un bateau")
+        print("   4) Ajouter un nouveau bateau")
 
     if(page != 1):
         print("   -) Retour")
@@ -88,11 +93,19 @@ def treat_user_response(r):
 
     elif(page == 2):
         if(r == 1):
-            pass
+            date = datetime.datetime.now()
+            date_start_string = str(date.year) + "-" + str(date.month) + "-" + str(date.day)
+            cur.execute("SELECT numImportation, nomMarchandise, poidsMarchandise, dateArriveeImportation, numQuai, matriculeBateau FROM Importations JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise) WHERE dateArriveeImportation=date('"+date_start_string+"')")
+            rows = cur.fetchall()
+            show_query_results(rows, 10)
+        
         elif(r == 2):
             cur.execute("SELECT numImportation, nomMarchandise, poidsMarchandise, dateArriveeImportation, numQuai, matriculeBateau FROM Importations JOIN Conteneurs USING(numConteneur) JOIN TypeMarchandises USING(numTypeMarchandise)")
             rows = cur.fetchall()
             show_query_results(rows, 1)
+
+        elif(r == 3):
+            pass
 
     elif(page == 6):
         if(r == 1):
@@ -111,12 +124,26 @@ def treat_user_response(r):
             rows = cur.fetchall()
             show_query_results(rows, 4)
 
+        elif(r == 4):
+            id_boat = input("Matricule du bateau : ")
+            name_boat = input("Nom du bateau : ")
+            cur.execute("INSERT INTO Bateaux VALUES ('"+id_boat+"','"+name_boat+"')")
+
     elif(page == 5):
         if(r == 1):
+            cur.execute("SELECT numQuai, secteurQuai FROM Quais")
+            rows = cur.fetchall()
+            show_query_results(rows, 11)
+
+        elif(r == 2):
             quai_number = input("Numéro du quai : ")
             cur.execute("SELECT numConteneur, dateArriveeImportation, matriculeBateau FROM Importations WHERE numQuai="+quai_number)
             rows = cur.fetchall()
             show_query_results(rows, 5)
+
+        elif(r == 3):
+            sector = input("Secteur du quai : ")
+            cur.execute("INSERT INTO Quais (secteurQuai) VALUES ('"+sector+"')")
 
     elif(page == 4):
         if(r == 1):
@@ -151,7 +178,10 @@ def treat_user_response(r):
 
 def show_query_results(rows, query_id):
 
-    print(rows)
+    if(rows == []):
+        print("Aucun résultat...")
+        input("Appuyez sur la touche entrée pour continuer...")
+        return 
 
     if(query_id == 1):
 
@@ -247,6 +277,13 @@ def show_query_results(rows, query_id):
         for row in rows:
             table.add_row(str(row[1]), row[2], str(row[3]), str(row[4]))
 
+    elif(query_id == 11):
+        table = Table(title="Liste des quais existant")
+        table.add_column("Numéro")
+        table.add_column("Secteur")
+
+        for row in rows:
+            table.add_row(str(row[0]), row[1])
 
     console = Console()
     console.print(table)
