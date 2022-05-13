@@ -271,7 +271,6 @@ def main():
         treat_user_response(response)
     
 
-## PUSH TEST ##
 
 create_database(cur)
 
